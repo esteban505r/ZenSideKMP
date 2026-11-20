@@ -1,12 +1,12 @@
 package com.zenside.app.core.navigation
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import com.zenside.app.core.ui.theme.ZenSideTheme
 
 /** Shared Compose root — the only composable platform entry points should host. */
 @Composable
 fun ZenSideApp(rootComponent: RootComponent) {
-    MaterialTheme {
+    ZenSideTheme {
         RootContent(rootComponent)
     }
 }
