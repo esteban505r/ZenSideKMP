@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
@@ -71,8 +72,8 @@ class DefaultMainComponent(
     override fun onTabSelected(tab: MainTab) {
         _selectedTab.set(tab)
         when (tab) {
-            MainTab.POSTURAS -> navigation.pushNew(Config.PosturasList)
-            MainTab.RUTINAS -> navigation.pushNew(Config.RutinasList)
+            MainTab.POSTURAS -> navigation.bringToFront(Config.PosturasList)
+            MainTab.RUTINAS -> navigation.bringToFront(Config.RutinasList)
         }
     }
 

@@ -4,18 +4,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.zenside.app.auth.presentation.LoginUiState
+import com.zenside.app.core.ui.components.ZenAuthCard
+import com.zenside.app.core.ui.components.ZenTextField
 
 @Composable
 fun LoginScreen(
@@ -26,54 +33,59 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "ZenSide", style = MaterialTheme.typography.headlineMedium)
-        Text(text = "Yoga y bienestar para niños", style = MaterialTheme.typography.bodyMedium)
+    val emailFocus = remember { FocusRequester() }
+    val passwordFocus = remember { FocusRequester() }
 
-        Column(modifier = Modifier.fillMaxWidth().padding(top = 32.dp)) {
-            OutlinedTextField(
+    LaunchedEffect(Unit) { emailFocus.requestFocus() }
+
+    ZenAuthCard(
+        title = "Bienvenido a ZenSide",
+        subtitle = "Yoga y bienestar para niños",
+        modifier = modifier.fillMaxSize()
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            ZenTextField(
                 value = state.email,
                 onValueChange = onEmailChanged,
-                label = { Text("Correo") },
-                modifier = Modifier.fillMaxWidth()
+                label = "Correo",
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next,
+                focusRequester = emailFocus
             )
-            OutlinedTextField(
+            ZenTextField(
                 value = state.password,
                 onValueChange = onPasswordChanged,
-                label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                label = "Contraseña",
+                isPassword = true,
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+                focusRequester = passwordFocus,
+                isError = state.errorMessage != null,
+                onSubmit = onLoginClicked,
+                modifier = Modifier.fillMaxWidth()
             )
+        }
 
-            state.errorMessage?.let { message ->
-                Text(
-                    text = message,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
+        state.errorMessage?.let { message ->
+            Text(text = message, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+        }
 
-            Button(
-                onClick = onLoginClicked,
-                enabled = !state.isLoading,
-                modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
-            ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.padding(2.dp))
-                } else {
-                    Text("Entrar")
-                }
+        Button(
+            onClick = onLoginClicked,
+            enabled = !state.isLoading,
+            shape = MaterialTheme.shapes.medium,
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            modifier = Modifier.fillMaxWidth().height(48.dp)
+        ) {
+            if (state.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.height(20.dp), color = Color.White)
+            } else {
+                Text("Entrar")
             }
+        }
 
-            TextButton(
-                onClick = onNavigateToRegister,
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-            ) {
-                Text("¿No tienes cuenta? Regístrate")
-            }
+        TextButton(onClick = onNavigateToRegister, modifier = Modifier.fillMaxWidth()) {
+            Text("¿No tienes cuenta? Regístrate")
         }
     }
 }

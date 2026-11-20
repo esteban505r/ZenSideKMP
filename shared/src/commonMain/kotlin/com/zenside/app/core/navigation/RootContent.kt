@@ -7,6 +7,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -42,7 +43,9 @@ fun RootContent(component: RootComponent) {
                     onLoginClicked = viewModel::onLoginClicked,
                     onNavigateToRegister = instance.component::onNavigateToRegister
                 )
-                state.loggedInUser?.let { user -> instance.component.onLoggedIn(user) }
+                LaunchedEffect(state.loggedInUser) {
+                    state.loggedInUser?.let { user -> instance.component.onLoggedIn(user) }
+                }
             }
 
             is RootComponent.Child.Register -> {
@@ -56,7 +59,9 @@ fun RootContent(component: RootComponent) {
                     onRegisterClicked = viewModel::onRegisterClicked,
                     onNavigateToLogin = instance.component::onNavigateToLogin
                 )
-                state.registeredUser?.let { user -> instance.component.onRegistered(user) }
+                LaunchedEffect(state.registeredUser) {
+                    state.registeredUser?.let { user -> instance.component.onRegistered(user) }
+                }
             }
 
             is RootComponent.Child.Main -> MainContent(instance.component)
