@@ -1,0 +1,16 @@
+CREATE TABLE User (
+    id TEXT NOT NULL PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    displayName TEXT NOT NULL,
+    passwordHash TEXT NOT NULL
+);
+
+insertUser:
+INSERT INTO User(id, email, displayName, passwordHash)
+VALUES (?, ?, ?, ?);
+
+selectUserByEmail:
+SELECT * FROM User WHERE email = ?;
+
+selectUserById:
+SELECT * FROM User WHERE id = ?;
